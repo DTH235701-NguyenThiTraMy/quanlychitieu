@@ -1,0 +1,26 @@
+{
+  "name": "quanlychitieu",
+  "version": "1.0.0",
+  "description": "Ứng dụng NodeJS + MongoDB Atlas quản lý chi tiêu cá nhân",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Nguyễn Thị Trà My - Phạm Thị Trúc Như",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^7.8.9",
+    "multer": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
