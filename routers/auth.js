@@ -1,22 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+const multer = require('multer');
 
 const User = require('../models/user');
+const cloudinary = require('../modules/cloudinary');
+const { checkGuest } = require('../modules/authMiddleware');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 
 // ===== REGISTER =====
-router.get('/register', (req, res) => {
-    res.render('register', { title: 'Đăng ký' });
+router.get('/register', checkGuest, (req, res) => {
+    res.render('register');
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', upload.single('avatar'), async (req, res) => {
     try {
         const email = req.body.email.toLowerCase().trim();
         const password = req.body.password;
+        const confirmPassword = req.body.confirmPassword;
 
         if (!email || !password) {
-            req.session.error = "Vui lòng nhập đầy đủ thông tin!";
+            req.session.error = "Vui lòng nhập đầy đủ!";
+            return res.redirect('/register');
+        }
+
+        if (password !== confirmPassword) {
+            req.session.error = "Mật khẩu không khớp!";
+            return res.redirect('/register');
+        }
+
+        if (password.length < 6) {
+            req.session.error = "Mật khẩu >= 6 ký tự!";
             return res.redirect('/register');
         }
 
@@ -26,12 +42,27 @@ router.post('/register', async (req, res) => {
             return res.redirect('/register');
         }
 
-        const salt = bcrypt.genSaltSync(10);
-        const hashedPassword = bcrypt.hashSync(password, salt);
+        let avatarUrl = '';
+
+        if (req.file) {
+            const result = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { folder: 'avatar' },
+                    (error, result) => {
+                        if (result) resolve(result);
+                        else reject(error);
+                    }
+                );
+                stream.end(req.file.buffer);
+            });
+
+            avatarUrl = result.secure_url;
+        }
 
         await User.create({
             email,
-            password: hashedPassword
+            password,
+            avatar: avatarUrl
         });
 
         req.session.success = "Đăng ký thành công!";
@@ -46,14 +77,16 @@ router.post('/register', async (req, res) => {
 
 
 // ===== LOGIN =====
-router.get('/login', (req, res) => {
-    res.render('login', { title: 'Đăng nhập' });
+router.get('/login', checkGuest, (req, res) => {
+    res.render('login');
 });
 
 router.post('/login', async (req, res) => {
     try {
         const email = req.body.email.toLowerCase().trim();
         const password = req.body.password;
+
+        req.session.email = email;
 
         const user = await User.findOne({ email });
 
@@ -62,7 +95,7 @@ router.post('/login', async (req, res) => {
             return res.redirect('/login');
         }
 
-        const isMatch = bcrypt.compareSync(password, user.password);
+        const isMatch = await user.comparePassword(password);
 
         if (!isMatch) {
             req.session.error = "Sai mật khẩu!";
@@ -71,8 +104,12 @@ router.post('/login', async (req, res) => {
 
         req.session.userId = user._id;
         req.session.email = user.email;
+        req.session.avatar = user.avatar;
 
-        res.redirect('/transactions');
+        const redirectTo = req.session.returnTo || '/transactions';
+        delete req.session.returnTo;
+
+        res.redirect(redirectTo);
 
     } catch (err) {
         console.log(err);
@@ -88,6 +125,5 @@ router.get('/logout', (req, res) => {
         res.redirect('/login');
     });
 });
-
 
 module.exports = router;

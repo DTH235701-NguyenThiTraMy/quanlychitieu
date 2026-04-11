@@ -3,65 +3,195 @@
 
 <head>
     <meta charset="utf-8">
-    <title>quản lý chi tiêu</title>
+    <title>Lịch chi tiêu</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <%- include('navbar') %>
+    <div class="container py-4">
+        <%- include('navbar') %>
 
-        <div class="container mt-4">
+        <!-- TITLE -->
+        <h2 class="text-center mb-4">
+            <%= new Date(selectedMonth).toLocaleString('vi-VN', { month: 'long' }) %>
+            năm <%= new Date(selectedMonth).getFullYear() %>
+        </h2>
 
-            <h3>📅 Lịch chi tiêu</h3>
+        <!-- CHỌN THÁNG -->
+        <form method="GET" class="text-center mb-4">
+            <input type="month" name="month" value="<%= selectedMonth %>" class="form-control w-auto d-inline">
+            <button class="btn btn-primary btn-sm">Xem</button>
+        </form>
 
-            <!-- CHỌN THÁNG -->
-            <form method="GET" class="mb-3">
-                <input type="month" name="month" value="<%= selectedMonth %>" class="form-control w-25 d-inline">
-                <button class="btn btn-primary btn-sm">Xem</button>
-            </form>
+        <!-- THỨ -->
+        <div class="week">
+            <div>CN</div>
+            <div>T2</div>
+            <div>T3</div>
+            <div>T4</div>
+            <div>T5</div>
+            <div>T6</div>
+            <div>T7</div>
+        </div>
 
-            <!-- HEADER THỨ -->
-            <div class="calendar mb-2">
-                <div class="header">CN</div>
-                <div class="header">T2</div>
-                <div class="header">T3</div>
-                <div class="header">T4</div>
-                <div class="header">T5</div>
-                <div class="header">T6</div>
-                <div class="header">T7</div>
-            </div>
+        <!-- CALENDAR -->
+        <div class="calendar">
 
-            <!-- CALENDAR -->
-            <div class="calendar">
+            <% for(let i=0; i < firstDay; i++){ %>
+                <div></div>
+            <% } %>
 
-                <!-- ô trống đầu tháng -->
-                <% for(let i=0; i < firstDay; i++) { %>
-                    <div></div>
+            <% for(let day=1; day <= daysInMonth; day++){ %>
+
+                <% 
+                let totalThu = 0;
+                let totalChi = 0;
+
+                if(grouped[day]){
+                    grouped[day].forEach(item => {
+                        if(item.type === 'thu') totalThu += item.amount;
+                        else totalChi += item.amount;
+                    });
+                }
+                %>
+
+                <div class="day <%= totalChi > 500000 ? 'high-expense' : '' %>"
+                    onclick="openDay('<%= selectedMonth %>-<%= day.toString().padStart(2,'0') %>')">
+
+                    <% if(grouped[day] && grouped[day].length > 0){ %>
+                        <% const latest = grouped[day][grouped[day].length - 1]; %>
+                        <% if(latest.image){ %>
+                            <img src="<%= latest.image %>">
+                        <% } %>
                     <% } %>
 
-                        <!-- ngày -->
-                        <% for(let i=1; i <=daysInMonth; i++) { %>
-                            <div class="day"
-                                onclick="location.href='/transactions?day=<%= i %>&month=<%= selectedMonth %>'">
-                                <div class="day-number">
-                                    <%= i %>
-                                </div>
+                    <% if(grouped[day]){ %>
+                        <span class="dot"></span>
+                    <% } %>
 
-                                <% if(grouped[i]) { %>
-                                    <img src="<%= grouped[i][0].image %>">
-                                    <% } %>
-                            </div>
+                    <!-- HIỂN THỊ THU + CHI -->
+                    <% if(totalThu > 0 || totalChi > 0){ %>
+                        <div class="money-box">
+                            <% if(totalThu > 0){ %>
+                                <div class="thu">+<%= totalThu.toLocaleString() %></div>
                             <% } %>
 
-            </div>
+                            <% if(totalChi > 0){ %>
+                                <div class="chi">-<%= totalChi.toLocaleString() %></div>
+                            <% } %>
+                        </div>
+                    <% } %>
+
+                    <div class="day-number"><%= day %></div>
+
+                </div>
+
+            <% } %>
 
         </div>
-        <!-- FOOTER -->
+
         <%- include('footer') %>
+    </div>
+
+    <!-- POPUP -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+
+            <h4 id="popup-date"></h4>
+
+            <div id="popup-images" class="popup-images"></div>
+
+            <div id="popup-total" class="mt-2 fw-bold"></div>
+
+            <button class="btn btn-danger mt-3 w-100" onclick="closePopup()">Đóng</button>
+
+        </div>
+    </div>
+
+    <!-- DATA -->
+    <script>
+        const allData = <%- jsonData %>;
+    </script>
+
+    <!-- SCRIPT -->
+    <script>
+        function openDay(dateStr) {
+
+            const popup = document.getElementById("popup");
+            const imagesDiv = document.getElementById("popup-images");
+            const totalDiv = document.getElementById("popup-total");
+            const title = document.getElementById("popup-date");
+
+            if (!popup) return;
+
+            imagesDiv.innerHTML = "";
+            totalDiv.innerHTML = "";
+
+            title.innerText = "📅 Ngày " + dateStr;
+
+            let totalThu = 0;
+            let totalChi = 0;
+
+            const items = allData.filter(item => {
+                const d = new Date(item.date);
+
+                const localDate =
+                    d.getFullYear() + '-' +
+                    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(d.getDate()).padStart(2, '0');
+
+                return localDate === dateStr;
+            });
+
+            if (items.length === 0) {
+                imagesDiv.innerHTML = "<p>Không có dữ liệu</p>";
+            } else {
+
+                items.forEach(item => {
+
+                    if (item.type === "chi") totalChi += item.amount;
+                    else totalThu += item.amount;
+
+                    imagesDiv.innerHTML += `
+                        <div class="border rounded p-2 mb-2">
+                            <div class="${item.type === 'thu' ? 'text-success' : 'text-danger'} fw-bold">
+                                ${item.type === 'thu' ? '💰 Thu' : '💸 Chi'}: ${item.amount.toLocaleString()} đ
+                            </div>
+                            <div class="text-muted small">${item.category || ''}</div>
+                        </div>
+                    `;
+
+                    if (item.image) {
+                        imagesDiv.innerHTML += `
+                            <img src="${item.image}">
+                        `;
+                    }
+
+                });
+            }
+
+            totalDiv.innerHTML = `
+                <div class="text-success">💰 Thu: ${totalThu.toLocaleString()} đ</div>
+                <div class="text-danger">💸 Chi: ${totalChi.toLocaleString()} đ</div>
+            `;
+
+            popup.style.display = "flex";
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+        window.addEventListener("click", function (e) {
+            const popup = document.getElementById("popup");
+            if (e.target === popup) popup.style.display = "none";
+        });
+    </script>
+
+    <%- include('javascript') %>
+
 </body>
 
 </html>

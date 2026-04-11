@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -16,10 +17,27 @@ const userSchema = new mongoose.Schema({
         minlength: 6
     },
 
-    createdAt: {
-        type: Date,
-        default: Date.now
+    avatar: {
+        type: String,
+        default: ''
     }
+
+}, { timestamps: true });
+
+
+// 🔥 HASH PASSWORD TRƯỚC KHI LƯU
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
 });
+
+
+// 🔥 SO SÁNH PASSWORD KHI LOGIN
+userSchema.methods.comparePassword = async function (password) {
+    return bcrypt.compare(password, this.password);
+};
 
 module.exports = mongoose.model('User', userSchema);

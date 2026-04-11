@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
 
-    <a class="navbar-brand" href="/">💰 ChiTieuCaNhan</a>
+    <a class="navbar-brand" href="/">💰 Chi Tiêu Cá Nhân</a>
 
     <div class="collapse navbar-collapse">
 
@@ -18,18 +18,38 @@
           <% } %>
       </ul>
 
+      <!-- DARK MODE -->
+      <button id="themeBtn" onclick="toggleTheme()" class="btn btn-sm btn-light me-3">
+        🌙
+      </button>
+
       <!-- USER -->
       <div class="d-flex align-items-center">
-        <% if (session.userId) { %>
-          <span class="text-white me-3">
-            👤 <%= session.email %>
-          </span>
 
-          <a href="/logout" class="btn btn-danger btn-sm">Đăng xuất</a>
-          <% } else { %>
-            <a href="/login" class="btn btn-light btn-sm me-2">Đăng nhập</a>
-            <a href="/register" class="btn btn-warning btn-sm">Đăng ký</a>
-            <% } %>
+        <% if (session.userId) { %>
+
+          <!-- AVATAR -->
+          <% if (session.avatar) { %>
+            <img src="<%= session.avatar %>" class="nav-avatar me-2">
+            <% } else { %>
+              <div class="nav-avatar default-avatar me-2">👤</div>
+              <% } %>
+
+                <!-- EMAIL -->
+                <span class="text-white me-3">
+                  <%= session.email %>
+                </span>
+
+                <!-- LOGOUT -->
+                <a href="/logout" class="btn btn-danger btn-sm">Đăng xuất</a>
+
+                <% } else { %>
+
+                  <a href="/login" class="btn btn-light btn-sm me-2">Đăng nhập</a>
+                  <a href="/register" class="btn btn-warning btn-sm">Đăng ký</a>
+
+                  <% } %>
+
       </div>
 
     </div>

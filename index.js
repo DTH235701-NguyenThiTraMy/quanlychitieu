@@ -28,6 +28,8 @@ app.use(express.urlencoded({ extended: true }));
 // static file
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
 // ===== SESSION =====
 app.use(session({
     name: 'ChiTieuApp',
