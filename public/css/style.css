@@ -151,11 +151,15 @@ body {
 
 .popup-content {
     background: white;
-    padding: 20px;
     width: 400px;
-    max-height: 80vh;
+    border-radius: 12px;
+    overflow: hidden; /* giữ bo góc */
+}
+
+.popup-body {
+    max-height: 70vh;
     overflow-y: auto;
-    border-radius: 14px;
+    padding: 20px;
 }
 
 .popup-images {
@@ -237,6 +241,12 @@ body.dark .form-control:focus {
 }
 
 /* navbar */
+/* ===== NAVBAR FIXED ===== */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 body.dark .navbar {
     background-color: #000 !important;
 }
@@ -250,9 +260,18 @@ body.dark .navbar .nav-link:hover {
 }
 
 /* footer */
+/* ===== FOOTER DARK MODE ===== */
+.footer {
+    transition: 0.3s;
+}
+
+/* DARK MODE */
 body.dark .footer {
-    background-color: #000;
     color: white !important;
+}
+
+body.dark .footer hr {
+    border-color: #555;
 }
 
 /* calendar */
@@ -303,4 +322,103 @@ body.dark .popup-content {
     padding: 2px 4px;
     border-radius: 4px;
     margin-bottom: 2px;
+}
+/* ===== POPUP GRID ĐẸP ===== */
+
+.popup-images {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+/* CARD */
+.item-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+}
+
+/* DARK MODE */
+body.dark .item-card {
+    background: #2a2a2a;
+    border: 1px solid #444;
+}
+
+/* ẢNH */
+.item-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+/* CONTENT */
+.item-body {
+    padding: 10px;
+}
+
+.item-type {
+    font-weight: bold;
+}
+
+.item-type.thu {
+    color: #28a745;
+}
+
+.item-type.chi {
+    color: #dc3545;
+}
+
+.item-amount {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.item-category {
+    font-size: 14px;
+    opacity: 0.7;
+}
+.summary-box {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #eee;
+    font-weight: bold;
+}
+
+body.dark .summary-box {
+    background: #333;
+}
+
+/* ===== FIX CHIỀU CAO 2 CỘT ===== */
+
+.recent-activity {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* scroll đẹp hơn */
+.recent-activity::-webkit-scrollbar {
+    width: 6px;
+}
+
+.recent-activity::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+body.dark .recent-activity::-webkit-scrollbar-thumb {
+    background: #555;
+}
+
+.card.h-100 {
+    display: flex;
+    flex-direction: column;
+}
+
+.card.h-100 .card-body {
+    flex: 1;
 }

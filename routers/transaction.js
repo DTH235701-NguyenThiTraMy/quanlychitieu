@@ -84,6 +84,15 @@ router.post('/add', checkLogin, upload.single('image'), async (req, res) => {
             req.session.error = "Số tiền không hợp lệ!";
             return res.redirect('/transactions');
         }
+        // ===== CHECK NGÀY KHÔNG ĐƯỢC > HÔM NAY =====
+        const inputDate = new Date(req.body.date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (inputDate > today) {
+            req.session.error = "Không được chọn ngày trong tương lai!";
+            return res.redirect('/transactions');
+        }
 
         let imageUrl = '';
 
@@ -227,6 +236,15 @@ router.post('/edit/:id', checkLogin, upload.single('image'), async (req, res) =>
             _id: req.params.id,
             userId: req.session.userId
         });
+        // ===== CHECK NGÀY KHÔNG ĐƯỢC > HÔM NAY =====
+        const inputDate = new Date(req.body.date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (inputDate > today) {
+            req.session.error = "Không được chọn ngày trong tương lai!";
+            return res.redirect('/transactions');
+        }
 
         let imageUrl = old.image;
 

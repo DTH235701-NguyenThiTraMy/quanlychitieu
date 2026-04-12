@@ -59,7 +59,7 @@
                         <!-- NGÀY -->
                         <div class="mb-3">
                             <label class="form-label">Ngày</label>
-                            <input type="date" name="date" class="form-control" required
+                            <input type="date" name="date" class="form-control" max="<%= new Date().toISOString().split('T')[0] %>" required
                                 value="<%= item.date ? new Date(item.date.getTime() - item.date.getTimezoneOffset()*60000).toISOString().slice(0,10) : '' %>">
                         </div>
 

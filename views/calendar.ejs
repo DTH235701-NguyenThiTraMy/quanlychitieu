@@ -13,91 +13,93 @@
     <div class="container py-4">
         <%- include('navbar') %>
 
-        <!-- TITLE -->
-        <h2 class="text-center mb-4">
-            <%= new Date(selectedMonth).toLocaleString('vi-VN', { month: 'long' }) %>
-            năm <%= new Date(selectedMonth).getFullYear() %>
-        </h2>
+            <!-- TITLE -->
+            <h2 class="text-center mb-4">
+                <%= new Date(selectedMonth).toLocaleString('vi-VN', { month: 'long' }) %>
+                    năm <%= new Date(selectedMonth).getFullYear() %>
+            </h2>
 
-        <!-- CHỌN THÁNG -->
-        <form method="GET" class="text-center mb-4">
-            <input type="month" name="month" value="<%= selectedMonth %>" class="form-control w-auto d-inline">
-            <button class="btn btn-primary btn-sm">Xem</button>
-        </form>
+            <!-- CHỌN THÁNG -->
+            <form method="GET" class="text-center mb-4">
+                <input type="month" name="month" value="<%= selectedMonth %>" class="form-control w-auto d-inline">
+                <button class="btn btn-primary btn-sm">Xem</button>
+            </form>
 
-        <!-- THỨ -->
-        <div class="week">
-            <div>CN</div>
-            <div>T2</div>
-            <div>T3</div>
-            <div>T4</div>
-            <div>T5</div>
-            <div>T6</div>
-            <div>T7</div>
-        </div>
+            <!-- THỨ -->
+            <div class="week">
+                <div>CN</div>
+                <div>T2</div>
+                <div>T3</div>
+                <div>T4</div>
+                <div>T5</div>
+                <div>T6</div>
+                <div>T7</div>
+            </div>
 
-        <!-- CALENDAR -->
-        <div class="calendar">
+            <!-- CALENDAR -->
+            <div class="calendar">
 
-            <% for(let i=0; i < firstDay; i++){ %>
-                <div></div>
-            <% } %>
-
-            <% for(let day=1; day <= daysInMonth; day++){ %>
-
-                <% 
-                let totalThu = 0;
-                let totalChi = 0;
-
-                if(grouped[day]){
-                    grouped[day].forEach(item => {
-                        if(item.type === 'thu') totalThu += item.amount;
-                        else totalChi += item.amount;
-                    });
-                }
-                %>
-
-                <div class="day <%= totalChi > 500000 ? 'high-expense' : '' %>"
-                    onclick="openDay('<%= selectedMonth %>-<%= day.toString().padStart(2,'0') %>')">
-
-                    <% if(grouped[day] && grouped[day].length > 0){ %>
-                        <% const latest = grouped[day][grouped[day].length - 1]; %>
-                        <% if(latest.image){ %>
-                            <img src="<%= latest.image %>">
-                        <% } %>
+                <% for(let i=0; i < firstDay; i++){ %>
+                    <div></div>
                     <% } %>
 
-                    <% if(grouped[day]){ %>
-                        <span class="dot"></span>
-                    <% } %>
+                        <% for(let day=1; day <=daysInMonth; day++){ %>
 
-                    <!-- HIỂN THỊ THU + CHI -->
-                    <% if(totalThu > 0 || totalChi > 0){ %>
-                        <div class="money-box">
-                            <% if(totalThu > 0){ %>
-                                <div class="thu">+<%= totalThu.toLocaleString() %></div>
-                            <% } %>
+                            <% let totalThu=0; let totalChi=0; if(grouped[day]){ grouped[day].forEach(item=> {
+                                if(item.type === 'thu') totalThu += item.amount;
+                                else totalChi += item.amount;
+                                });
+                                }
+                                %>
 
-                            <% if(totalChi > 0){ %>
-                                <div class="chi">-<%= totalChi.toLocaleString() %></div>
-                            <% } %>
-                        </div>
-                    <% } %>
+                                <div class="day <%= totalChi > 500000 ? 'high-expense' : '' %>"
+                                    onclick="openDay('<%= selectedMonth %>-<%= day.toString().padStart(2,'0') %>')">
 
-                    <div class="day-number"><%= day %></div>
+                                    <% if(grouped[day] && grouped[day].length> 0){ %>
+                                        <% const latest=grouped[day][grouped[day].length - 1]; %>
+                                            <% if(latest.image){ %>
+                                                <img src="<%= latest.image %>">
+                                                <% } %>
+                                                    <% } %>
 
-                </div>
+                                                        <% if(grouped[day]){ %>
+                                                            <span class="dot"></span>
+                                                            <% } %>
 
-            <% } %>
+                                                                <!-- HIỂN THỊ THU + CHI -->
+                                                                <% if(totalThu> 0 || totalChi > 0){ %>
+                                                                    <div class="money-box">
+                                                                        <% if(totalThu> 0){ %>
+                                                                            <div class="thu">+<%=
+                                                                                    totalThu.toLocaleString() %>
+                                                                            </div>
+                                                                            <% } %>
 
-        </div>
+                                                                                <% if(totalChi> 0){ %>
+                                                                                    <div class="chi">-<%=
+                                                                                            totalChi.toLocaleString() %>
+                                                                                    </div>
+                                                                                    <% } %>
+                                                                    </div>
+                                                                    <% } %>
 
-        <%- include('footer') %>
+                                                                        <div class="day-number">
+                                                                            <%= day %>
+                                                                        </div>
+
+                                </div>
+
+                                <% } %>
+
+            </div>
+
+            <%- include('footer') %>
     </div>
 
     <!-- POPUP -->
     <div id="popup" class="popup">
         <div class="popup-content">
+            <div class="popup-body">
 
             <h4 id="popup-date"></h4>
 
@@ -106,7 +108,7 @@
             <div id="popup-total" class="mt-2 fw-bold"></div>
 
             <button class="btn btn-danger mt-3 w-100" onclick="closePopup()">Đóng</button>
-
+</div>
         </div>
     </div>
 
@@ -130,6 +132,7 @@
             totalDiv.innerHTML = "";
 
             title.innerText = "📅 Ngày " + dateStr;
+            
 
             let totalThu = 0;
             let totalChi = 0;
@@ -155,27 +158,37 @@
                     else totalThu += item.amount;
 
                     imagesDiv.innerHTML += `
-                        <div class="border rounded p-2 mb-2">
-                            <div class="${item.type === 'thu' ? 'text-success' : 'text-danger'} fw-bold">
-                                ${item.type === 'thu' ? '💰 Thu' : '💸 Chi'}: ${item.amount.toLocaleString()} đ
-                            </div>
-                            <div class="text-muted small">${item.category || ''}</div>
-                        </div>
-                    `;
+    <div class="item-card">
 
-                    if (item.image) {
-                        imagesDiv.innerHTML += `
-                            <img src="${item.image}">
-                        `;
-                    }
+        ${item.image ? `
+            <img src="${item.image}" class="item-img">
+        ` : ''}
+        <div class="item-body">
+            <div class="item-type ${item.type}">
+                ${item.type === 'thu' ? '💰 Thu' : '💸 Chi'}
+            </div>
+
+            <div class="item-amount">
+                ${item.amount.toLocaleString()} đ
+            </div>
+
+            <div class="item-category">
+                ${item.category || ''}
+            </div>
+        </div>
+
+    </div>
+`;
 
                 });
             }
 
             totalDiv.innerHTML = `
-                <div class="text-success">💰 Thu: ${totalThu.toLocaleString()} đ</div>
-                <div class="text-danger">💸 Chi: ${totalChi.toLocaleString()} đ</div>
-            `;
+    <div class="summary-box">
+        💰 Thu: ${totalThu.toLocaleString()} đ <br>
+        💸 Chi: ${totalChi.toLocaleString()} đ
+    </div>
+`;
 
             popup.style.display = "flex";
         }

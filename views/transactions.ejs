@@ -32,14 +32,14 @@
                 <div class="card-body">
 
                     <!-- THỐNG KÊ + HOẠT ĐỘNG -->
-                    <div class="row mb-4">
+                    <div class="row mb-4 align-items-stretch">
 
                         <!-- CỘT TRÁI -->
                         <div class="col-md-5">
                             <div class="card h-100">
-                                <div class="card-body">
+                                <div class="card-body recent-activity">
                                     <h5 class="mb-2">📅 Hoạt động gần đây</h5>
-                                    <h6 class="text-muted mb-3">5 ngày gần nhất</h6>
+                                    <!-- <h6 class="text-muted mb-3">5 ngày gần nhất</h6> -->
 
                                     <% Object.keys(dailyMap) .sort((a, b)=> new Date(b) - new Date(a))
                                         .slice(0,5)
@@ -149,7 +149,8 @@
 
                         <div class="col-md-2">
                             <label class="form-label">Ngày</label>
-                            <input type="date" name="date" class="form-control">
+                            <input type="date" name="date" class="form-control"
+       max="<%= new Date().toISOString().split('T')[0] %>">
                         </div>
 
                         <div class="col-md-2">
