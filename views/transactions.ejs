@@ -121,48 +121,53 @@
 
                     <!-- FORM THÊM -->
                     <form method="POST" action="/transactions/add" enctype="multipart/form-data"
-                        class="row g-3 mb-4 align-items-end">
+    class="row g-2 mb-4 align-items-end">
 
-                        <div class="col-md-2">
-                            <label class="form-label">Loại</label>
-                            <select name="type" class="form-select">
-                                <option value="thu">Thu</option>
-                                <option value="chi">Chi</option>
-                            </select>
-                        </div>
+    <div class="col-md-2">
+        <label class="form-label">Loại</label>
+        <select name="type" class="form-select">
+            <option value="thu">Thu</option>
+            <option value="chi">Chi</option>
+        </select>
+    </div>
 
-                        <div class="col-md-2">
-                            <label class="form-label">Số tiền</label>
-                            <input type="number" name="amount" class="form-control" required>
-                        </div>
+    <div class="col-md-2">
+        <label class="form-label">Số tiền</label>
+        <input type="number" name="amount" class="form-control" required>
+    </div>
 
-                        <div class="col-md-2">
-                            <label class="form-label">Danh mục</label>
-                            <select name="category" class="form-select">
-                                <% categories.forEach(c=> { %>
-                                    <option value="<%= c %>">
-                                        <%= c %>
-                                    </option>
-                                    <% }) %>
-                            </select>
-                        </div>
+    <div class="col-md-2">
+        <label class="form-label">Danh mục</label>
+        <select name="category" class="form-select">
+            <% categories.forEach(c=> { %>
+                <option value="<%= c %>"><%= c %></option>
+            <% }) %>
+        </select>
+    </div>
 
-                        <div class="col-md-2">
-                            <label class="form-label">Ngày</label>
-                            <input type="date" name="date" class="form-control"
-       max="<%= new Date().toISOString().split('T')[0] %>">
-                        </div>
+    <div class="col-md-2">
+        <label class="form-label">Ghi chú</label>
+        <input type="text" name="note" class="form-control">
+    </div>
 
-                        <div class="col-md-2">
-                            <label class="form-label">Ảnh</label>
-                            <input type="file" name="image" class="form-control">
-                        </div>
+    <div class="col-md-2">
+        <label class="form-label">Ngày</label>
+        <input type="date" name="date" class="form-control"
+            max="<%= new Date().toISOString().split('T')[0] %>">
+    </div>
 
-                        <div class="col-md-2">
-                            <button class="btn btn-primary w-100">Thêm</button>
-                        </div>
+    <!-- ẢNH (GIẢM WIDTH) -->
+    <div class="col-md-1">
+        <label class="form-label">Ảnh</label>
+        <input type="file" name="image" class="form-control">
+    </div>
 
-                    </form>
+    <!-- BUTTON (GIẢM WIDTH) -->
+    <div class="col-md-1">
+        <button class="btn btn-primary w-100">Thêm</button>
+    </div>
+
+</form>
 
 
                     <!-- TABLE -->

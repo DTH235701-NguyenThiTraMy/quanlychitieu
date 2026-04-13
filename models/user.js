@@ -24,8 +24,6 @@ const userSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-
-// 🔥 HASH PASSWORD TRƯỚC KHI LƯU
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
 

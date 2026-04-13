@@ -1,3 +1,6 @@
+<%
+const todayStr = new Date().toISOString().split('T')[0];
+%>
 <!DOCTYPE html>
 <html>
 
@@ -52,8 +55,10 @@
                                 }
                                 %>
 
-                                <div class="day <%= totalChi > 500000 ? 'high-expense' : '' %>"
-                                    onclick="openDay('<%= selectedMonth %>-<%= day.toString().padStart(2,'0') %>')">
+                                <div class="day 
+    <%= totalChi > 500000 ? 'high-expense' : '' %>
+    <%= (selectedMonth + '-' + day.toString().padStart(2,'0')) === todayStr ? 'today' : '' %>"
+    onclick="openDay('<%= selectedMonth %>-<%= day.toString().padStart(2,'0') %>')">
 
                                     <% if(grouped[day] && grouped[day].length> 0){ %>
                                         <% const latest=grouped[day][grouped[day].length - 1]; %>
@@ -119,6 +124,11 @@
 
     <!-- SCRIPT -->
     <script>
+        const today = new Date();
+const todayStr =
+    today.getFullYear() + '-' +
+    String(today.getMonth() + 1).padStart(2, '0') + '-' +
+    String(today.getDate()).padStart(2, '0');
         function openDay(dateStr) {
 
             const popup = document.getElementById("popup");
