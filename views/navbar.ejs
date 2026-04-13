@@ -1,58 +1,52 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
   <div class="container-fluid">
-
     <a class="navbar-brand" href="/">💰 Chi Tiêu Cá Nhân</a>
 
-    <div class="collapse navbar-collapse">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainContent" aria-controls="navbarMainContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <!-- MENU -->
-      <ul class="navbar-nav me-auto">
+    <div class="collapse navbar-collapse" id="navbarMainContent">
+      
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <% if (session.userId) { %>
           <li class="nav-item">
             <a class="nav-link" href="/transactions">Chi tiêu</a>
           </li>
-
           <li class="nav-item">
             <a class="nav-link" href="/transactions/calendar">Lịch</a>
           </li>
-          <% } %>
+        <% } %>
       </ul>
 
-      <!-- DARK MODE -->
-      <button id="themeBtn" onclick="toggleTheme()" class="btn btn-sm btn-light me-3">
-        🌙
-      </button>
-
-      <!-- USER -->
-      <div class="d-flex align-items-center">
+      <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
+        
+        <button id="themeBtn" onclick="toggleTheme()" class="btn btn-sm btn-outline-light me-lg-3 my-2 my-lg-0">
+          🌙 Chế độ
+        </button>
 
         <% if (session.userId) { %>
-
-          <!-- AVATAR -->
-          <% if (session.avatar) { %>
-            <img src="<%= session.avatar %>" class="nav-avatar me-2">
+          <div class="d-flex align-items-center mt-2 mt-lg-0">
+            <% if (session.avatar) { %>
+              <img src="<%= session.avatar %>" class="nav-avatar rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
             <% } else { %>
               <div class="nav-avatar default-avatar me-2">👤</div>
-              <% } %>
+            <% } %>
 
-                <!-- EMAIL -->
-                <span class="text-white me-3">
-                  <%= session.email %>
-                </span>
+            <span class="text-white me-3 text-truncate" style="max-width: 150px;">
+              <%= session.email %>
+            </span>
 
-                <!-- LOGOUT -->
-                <a href="/logout" class="btn btn-danger btn-sm">Đăng xuất</a>
-
-                <% } else { %>
-
-                  <a href="/login" class="btn btn-light btn-sm me-2">Đăng nhập</a>
-                  <a href="/register" class="btn btn-warning btn-sm">Đăng ký</a>
-
-                  <% } %>
+            <a href="/logout" class="btn btn-danger btn-sm">Đăng xuất</a>
+          </div>
+        <% } else { %>
+          <div class="mt-2 mt-lg-0">
+            <a href="/login" class="btn btn-light btn-sm me-2">Đăng nhập</a>
+            <a href="/register" class="btn btn-warning btn-sm">Đăng ký</a>
+          </div>
+        <% } %>
 
       </div>
-
     </div>
-
   </div>
 </nav>
